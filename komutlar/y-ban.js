@@ -13,21 +13,6 @@ exports.run = async (bot, message, args) => {
     if (member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(`${process.env.basarisiz} Kendi yetkimin üstündeki kişileri yasaklayamam.`)
     if (!reason) reason = 'Neden belirtilmemiş.'
   
-    message.channel.send(`${user.tag}, adlı kullanıcıyı sunucudan yasaklayacağım emin misiniz? Eminseniz \`e\` işlemi iptal etmek ise \`h\` olarak cevaplayınız.`)
-        let uwu = false;
-            while (!uwu) {
-                if (choice == 'hayır' || choice == 'h') return message.channel.send('🚀 İşlem iptal **edildi.**')
-                if (choice !== 'evet' && choice !== 'e') {
-                message.channel.send('❓ Lütfen sadece **evet (e)** veya **hayır (h)** ile cevap verin.')
-                }
-                if (choice == 'evet' || choice == 'e') uwu = true
-                }
-                if (uwu) {
-                try {
-                await member.ban(reason + ` | Yetkili: ${message.author.tag} - ${message.author.id}`)
-  
-                message.channel.send(`${process.env.basarili} **${user.tag}** adlı kullanıcı sunucudan yasaklandı.`)
-                user.send(`**${message.guild.name}** adlı sunucudan **banlandınız!**\n*Sebep:* \`\`\`${reason}\`\`\``)
 
                 let embed = new Discord.RichEmbed()
                     .setColor(0xffa300)
