@@ -5,6 +5,7 @@ let müzik = new Discord.RichEmbed()
 .setAuthor(message.author.username, message.author.avatarURL)
 .setColor('RANDOM')
 .addField('Goy Goy Bot | Mod Komutları',`
+**.reklam-engel** : Sunucuya Reklam Koruması Sağlar
 **.otorol** : Sunucuya Otorol Ayarlar`)
 
 .setFooter('Goy Goy Bot')
