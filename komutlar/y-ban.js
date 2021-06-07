@@ -1,46 +1,58 @@
-const Discord = require("discord.js");
-const client = new Discord.Client();
-const db = require('quick.db')
+const Discord = require('discord.js');
+const db = require('quick.db');
 
-exports.run = (client, message, args) => {
-  if (!message.guild) {
-    const ozelmesajuyari = new Discord.RichEmbed()
-      .setColor("RANDOM")
-      .setTimestamp() 
-      .addField(`Hatalı Kullanım` , `Bu Komutu Özel Mesajlarda Kullanamazsınız Lütfen Sunucu İçerisinde Herhangi Bir Kanalı Kullanınız`)
-    return message.author.sendEmbed(ozelmesajuyari);
-  }
-   if (!message.member.roles.has('850882647612981248') && !message.member.hasPermission('BAN_MEMBERS')) return message.channel.sendEmbed(new Discord.RichEmbed().addField(`Yetersiz Yetki` , `Bu Yetkiyi Kullanmak için Yeterli Yetkiye Sahip Değilsin`).setColor("RANDOM").setFooter(message.author.tag ,message.author.avatarURL).setTimestamp());
-  let guild = message.guild;
-  let reason = args.slice(1).join(" ");
-  let user = message.mentions.users.first();
-  let modlog = guild.channels.find("name", "〖🎤〗modlog");
-  db.add(`ban.${message.author.id}.${message.guild.id}`, 1)
-  if (!modlog) return message.channel.sendEmbed(new Discord.RichEmbed().addField(`Hata` , `Log Kanalını Bulamıyorum`).setColor("RANDOM").setFooter(message.author.tag ,message.author.avatarURL).setTimestamp());
-    if (message.mentions.users.size < 1)
-    return message.channel.sendEmbed(new Discord.RichEmbed().addField(`Hatalı Kullanım` , `Yasaklanacak Kullanıcıyı Etiketleyiniz`).setColor("RANDOM").setFooter(message.author.tag ,message.author.avatarURL).setTimestamp()).catch(console.error);
-  if (reason.length < 1) return message.channel.sendEmbed(new Discord.RichEmbed().addField(`Hatalı Kullanım` , `Lütfen Yasaklama Sebebinizi Yazınız`).setColor("RANDOM").setFooter(message.author.tag ,message.author.avatarURL).setTimestamp());
+exports.run = async (bot, message, args) => {
+    if (!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send(":no_entry: Bu komudu kullanabilmek için `Üyeleri Yasakla` yetkisine sahip olmanız gerek.");
+    let reason = args.slice(1).join(' ')
+    if (!args[0]) return message.channel.send(":no_entry: Yasaklamak istediğiniz kullanıcıyı etiketleyiniz.")
+    let user = message.mentions.users.first() || bot.users.get(args[0]) || message.guild.members.find(u => u.user.username.toLowerCase().includes(args[0].toLowerCase())).user
 
-  if (!message.guild.member(user).bannable)
-    return message.channel.sendEmbed(new Discord.RichEmbed().addField(`Hatalı Kullanım` , `Yetkilileri Banlayamasınız`).setColor("RANDOM").setFooter(message.author.tag ,message.author.avatarURL).setTimestamp());
-  message.guild.ban(user, {reason: reason})
-  const embed = new Discord.RichEmbed()
-    .setColor("RED")
-    .setTimestamp()
-    .setAuthor(message.author.username, message.author.avatarURL)
-    .setDescription(`<@!${user.id}> Adlı Kullanıcı <@!${message.author.id}> Tarafından **${reason}** Sebebiyle Sunucudan Yasaklandı`)
-  return guild.channels.get(modlog.id).sendEmbed(embed);
-};
+    if (!user) return message.channel.send(`${process.env.basarisiz} Etiketlediğin kullanıcıyı sunucuda bulamadım.`)
+    let member = message.guild.member(user)
+    if (!member) return message.channel.send(`${process.env.basarisiz} Etiketlediğin kullanıcıyı sunucuda bulamadım.`)
+    if (member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(`${process.env.basarisiz} Kendi yetkimin üstündeki kişileri yasaklayamam.`)
+    if (!reason) reason = 'Neden belirtilmemiş.'
+  
+    message.channel.send(`${user.tag}, adlı kullanıcıyı sunucudan yasaklayacağım emin misiniz? Eminseniz \`e\` işlemi iptal etmek ise \`h\` olarak cevaplayınız.`)
+        let uwu = false;
+            while (!uwu) {
+                if (choice == 'hayır' || choice == 'h') return message.channel.send('🚀 İşlem iptal **edildi.**')
+                if (choice !== 'evet' && choice !== 'e') {
+                message.channel.send('❓ Lütfen sadece **evet (e)** veya **hayır (h)** ile cevap verin.')
+                }
+                if (choice == 'evet' || choice == 'e') uwu = true
+                }
+                if (uwu) {
+                try {
+                await member.ban(reason + ` | Yetkili: ${message.author.tag} - ${message.author.id}`)
+  
+                message.channel.send(`${process.env.basarili} **${user.tag}** adlı kullanıcı sunucudan yasaklandı.`)
+                user.send(`**${message.guild.name}** adlı sunucudan **banlandınız!**\n*Sebep:* \`\`\`${reason}\`\`\``)
+
+                let embed = new Discord.RichEmbed()
+                    .setColor(0xffa300)
+                    .setAuthor(`${user.username} adlı kişi yasaklandı!`, user.avatarURL||user.defaultAvatarURL)
+                    .addField('Yasaklanan Kullanıcı', `${user.tag}-[${user.id}]`, true)
+                    .addField('Yasaklayan Yetkili', `${message.author.tag}-[${message.author.id}]`, true)
+                    .addField('Yasaklama Nedeni', reason, true);
+                let membermodChannel = await db.fetch(`membermodChannel_${message.guild.id}`)
+                if (!message.guild.channels.get(membermodChannel)) return
+                else message.guild.channels.get(membermodChannel).send(embed)
+            } catch(e) {
+            message.channel.send(':warning: Bir hata var!')
+        }
+    } else return console.log('Hata var')
+}
 
 exports.conf = {
   enabled: true,
   guildOnly: true,
-  aliases: ["ban","yasakla","banla"],
+  aliases: [],
   permLevel: 0
 };
 
 exports.help = {
-  name: "ban",
-  description: "İstediğiniz kişiyi banlar.",
-  usage: "ban [kullanıcı] [sebep]"
+  name: 'ban',
+  description: '',
+  usage: 'ban'
 };
