@@ -153,6 +153,99 @@ member.addRole(role)
 
 //OTOROL BİTİŞ
 
+//REKLAM ENGEL BAŞLANGIÇ
+
+client.on("message", async message => {
+  let uyarisayisi = await db.fetch(`reklamuyari_${message.author.id}`);
+  let reklamkick = await db.fetch(`reklamkick_${message.guild.id}`);
+  let salvo = message.member;
+  if (reklamkick == "kapali") return;
+  if (reklamkick == "acik") {
+    const reklam = [
+      "discord.app",
+      "discord.gg",
+      "invite",
+      "discordapp",
+      "discordgg",
+      ".com",
+      ".net",
+      ".xyz",
+      ".tk",
+      ".pw",
+      ".io",
+      ".me",
+      ".gg",
+      "www.",
+      "https",
+      "http",
+      ".gl",
+      ".org",
+      ".com.tr",
+      ".biz",
+      ".party",
+      ".rf.gd",
+      ".az"
+    ];
+    if (reklam.some(word => message.content.toLowerCase().includes(word))) {
+      if (!message.member.hasPermission("ADMINISTRATOR")) {
+        message.delete();
+        db.add(`reklamuyari_${message.author.id}`, 1); 
+        if (uyarisayisi === null) {
+          let uyari = new Discord.RichEmbed()
+            .setColor("RANDOM")
+            .setFooter("Reklam Koruma", client.user.avatarURL)
+            .setDescription(
+              `<@${message.author.id}> Reklam Koruma Sistemine Yaklandın Lütfen Reklam Yapma (1/3)`
+            )
+            .setTimestamp();
+          message.channel.send(uyari);
+        }
+        if (uyarisayisi === 1) {
+          let uyari = new Discord.RichEmbed()
+            .setColor("RANDOM")
+            .setFooter("Reklam Koruma", client.user.avatarURL)
+            .setDescription(
+              `<@${message.author.id}> Reklam Koruma Sistemine Yaklandın Lütfen Reklam Yapma (2/3)`
+            )
+            .setTimestamp();
+          message.channel.send(uyari);
+        }
+        if (uyarisayisi === 2) {
+          message.delete();
+          await salvo.kick({
+            reason: `Reklam kick sistemi`
+          });
+          let uyari = new Discord.RichEmbed()
+            .setColor("RANDOM")
+            .setFooter("Reklam Koruma", client.user.avatarURL)
+            .setDescription(
+              `<@${message.author.id}> 3 Kez Reklam Uyarısı Aldığı Tespit Edildi ve Sunucudan Atıldı (3/3)`
+            )
+            .setTimestamp();
+          message.channel.send(uyari);
+        }
+        if (uyarisayisi === 3) {
+          message.delete();
+          await salvo.ban({
+            reason: `Goy Goy Bot | Reklam Koruma Sistemi`
+          });
+          db.delete(`reklamuyari_${message.author.id}`);
+          let uyari = new Discord.RichEmbed()
+            .setColor("RANDOM")
+            .setFooter("Reklam Koruma", client.user.avatarURL)
+            .setDescription(
+              `<@${message.author.id}> Atıldıktan Sonra Tekrar Reklam Yaptığı için Banlandı`
+            )
+            .setTimestamp();
+          message.channel.send(uyari);
+        }
+      }
+    }
+  }
+});
+
+//REKLAM ENGEL SON
+
 
 
 client.login(ayarlar.token);
