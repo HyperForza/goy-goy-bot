@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const data = require('quick.db')
 
 exports.run = async (client, message, args, emoji) => {
-const prefix = await data.fetch(`prefix.${message.guild.id}`) || client.ayarlar.prefix;
 if(!message.member.hasPermission('ADMINISTRATOR')) return;
   
 if(args[0] === 'ayarla') {
