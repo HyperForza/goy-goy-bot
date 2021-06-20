@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const data = require('quick.db')
 
 exports.run = async (client, message, args) => {
-const prefix = await data.fetch(`prefix.${message.guild.id}`) || client.ayarlar.prefix;
   
 if(args[0] === 'gönder') {
 const kanalbelirle = await data.fetch(`kanal.${message.guild.id}`)
