@@ -12,7 +12,7 @@ exports.run = (client, message, args) => {
     let user = message.mentions.users.first();
     let reason = args.slice(1).join(' ');
 
-    if (message.mentions.user.size < 1  ) return message.reply('Banlamaj İstediğiniz Kişiyi Etiketleyin');
+    if (message.mentions.user.size < 1  ) return message.reply('Banlamak İstediğiniz Kişiyi Etiketleyin');
     if (reason.leght < 1) return message.reply('Sebep Belirtin');
     if (user.id === message.author.id) return message.reply("Kendini Banlayamazsın");
 
