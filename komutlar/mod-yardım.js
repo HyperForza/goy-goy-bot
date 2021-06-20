@@ -8,8 +8,7 @@ let müzik = new Discord.RichEmbed()
 **.ban** : Belirttiğiniz Şarkıyı Sesli Odada Söyler
 **.kick** : Çalan Şarkıyı Durdurur
 **.sil** : Durdurduğunuz Şarkıyı Devam Ettirir
-**.sustur** : Çalan Şarkıyı Tekrarlar
-**.unban** : Bi Sonraki Şarkıya Geçiş Yapar`)
+**.sustur** : Çalan Şarkıyı Tekrarlar`)
 
 .setFooter('Goy Goy Bot')
  message.channel.send(müzik) 
