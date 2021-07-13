@@ -19,7 +19,7 @@
     "jimp": "^0.13.0",
     "moment": "^2.27.0",
     "node-opus": "^0.3.3",
-    "moment-duration-format": "^2.3.2"
+    "moment-duration-format": "^2.3.2",
     "opusscript": "^0.0.7",
     "path": "^0.12.7",
     "pokedex-api": "^1.1.2",
